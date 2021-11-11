@@ -8,7 +8,7 @@ vector<int> rabin_karp(string* text, string* query);
 
 int main(int argc, char* argv[]) {
 	string query = argv[1];  // what to search for
-	query = "el";
+	query = "l";
 
 	string txt = "Hello world";  // text to seach
 
@@ -52,9 +52,6 @@ vector<int> rabin_karp(string* text, string* query) {
 			for (j = 0; j < M; j++) {
 				if (text->at(i + j) != query->at(j)) {
 					break;
-				}
-				else {
-					j++;
 				}
 			}
 			if (j == M) {
