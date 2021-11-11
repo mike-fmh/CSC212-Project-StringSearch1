@@ -4,7 +4,7 @@
 #include <math.h>
 using namespace std;
 
-vector<int> rabin_karp(string* text, string* query, int d);
+vector<int> rabin_karp(string* text, string* query);
 
 int main(int argc, char* argv[]) {
 	string query = argv[1];  // what to search for
@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
 	
 	string txt = "Hello world";  // text to seach
 	
-	int alphabetLen = 256;
+
 	cout << "Input text: \"" << txt << "\"\nQuery: \"" << query << "\"\n";
 	vector<int> matches = rabin_karp(&txt, &query, alphabetLen);
 
@@ -29,9 +29,10 @@ int main(int argc, char* argv[]) {
 }
 
 
-vector<int> rabin_karp(string* text, string* query, int d) {
+vector<int> rabin_karp(string* text, string* query) {
 	vector<int> matchIndices;
 	int q = 79; // any prime number will work
+	int d = 256; // length of alphabet
 
 	int M = query->size();
 	int N = text->size();
