@@ -7,10 +7,10 @@ using namespace std;
 vector<int> rabin_karp(string* text, string* query);
 
 int main(int argc, char* argv[]) {
-	string query = argv[1];  // what to search for
-	query = "l";
-
-	string txt = "Hello world";  // text to seach
+	string txt = argv[1]; // text to perform search on
+	string query = argv[2];  // what to search for
+//	query = "l";
+//	txt = "Hello world"; 
 
 
 	cout << "Input text: \"" << txt << "\"\nQuery: \"" << query << "\"\n";
@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
 
 vector<int> rabin_karp(string* text, string* query) {
 	vector<int> matchIndices;
-	int q = 79; // any prime number will work
+	int q = 79; // any prime number
 	int d = 256; // length of alphabet
 
 	int M = query->size();
@@ -68,3 +68,4 @@ vector<int> rabin_karp(string* text, string* query) {
 	}
 	return matchIndices;
 }
+ 
