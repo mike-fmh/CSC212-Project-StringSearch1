@@ -8,13 +8,13 @@ vector<int> rabin_karp(string* text, string* query);
 
 int main(int argc, char* argv[]) {
 	string query = argv[1];  // what to search for
-	query = "el";  
-	
+	query = "el";
+
 	string txt = "Hello world";  // text to seach
-	
+
 
 	cout << "Input text: \"" << txt << "\"\nQuery: \"" << query << "\"\n";
-	vector<int> matches = rabin_karp(&txt, &query, alphabetLen);
+	vector<int> matches = rabin_karp(&txt, &query);
 
 	if (matches.size() > 0) {
 		cout << "\nFound matches at indices:\n";
