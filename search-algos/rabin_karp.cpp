@@ -5,7 +5,6 @@
 using namespace std;
 
 vector<int> rabin_karp(string* text, string* query, int d);
-vector<int> rabin_karp2(string* text, string* query, int d);
 
 int main(int argc, char* argv[]) {
 	string query = argv[1];  // what to search for
