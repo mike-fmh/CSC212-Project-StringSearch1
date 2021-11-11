@@ -30,6 +30,7 @@ int main(int argc, char* argv[]) {
 
 
 vector<int> rabin_karp(string* text, string* query) {
+	// returns a vector of indices where a query match was found in the text
 	vector<int> matchIndices;
 	int q = 79; // any prime number
 	int d = 256; // length of alphabet
