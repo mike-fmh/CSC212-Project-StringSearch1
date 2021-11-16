@@ -32,41 +32,40 @@ int main(int argc, char* argv[]) {
 vector<int> rabin_karp(string* text, string* query) {
 	// returns a vector of indices where a query match was found in the text
 	vector<int> matchIndices;
-	int q = 79; // any prime number
-	int d = 256; // length of alphabet
+	int prime = 101; // any prime number
+	int numLetters = 256; // length of alphabet
 
-	int M = query->size();
-	int N = text->size();
-	int i, j;
-
-	int h = pow(d, M - 1);
-	h %= q;
-
-	int p = 0, t = 0;
-	for (i = 0; i < M; i++) {
-		p = (d * p + int(query->at(i))) % q;
-		t = (d * t + int(text->at(i))) % q;
+	int h = 1;
+	for (int i = 0; i < query->size() - 1; i++) {
+		h = (h * numLetters) % prime;
 	}
 
-	for (i = 0; i < (N - M + 1); i++) {
-		if (p == t) {
-			for (j = 0; j < M; j++) {
+	int patternHash = 0;
+	int textHash = 0;
+	for (int i = 0; i < query->size(); i++) {
+		patternHash = (numLetters * patternHash + int(query->at(i))) % prime;
+		textHash = (numLetters * textHash + int(text->at(i))) % prime;
+	}
+
+	for (int i = 0; i < (text->size() - query->size() + 1); i++) {
+		if (patternHash == textHash) {
+			int j; // initialize outside for loop so the next if statement can use j
+			for (j = 0; j < query->size(); j++) {
 				if (text->at(i + j) != query->at(j)) {
 					break;
 				}
 			}
-			if (j == M) {
+			if (j == query->size()) {
 				matchIndices.push_back(i);
 			}
 		}
-		if (i < N - M) {
-			t = (d * (t - int(text->at(i) * h)) + int(text->at(i + M))) % q;
-
-			if (t < 0) {
-				t += q;
+		if (i < text->size() - query->size()) {
+			textHash = (numLetters * (textHash - int(text->at(i)) * h) + int(text->at(i + query->size()))) % prime;
+			if (textHash < 0) {
+				textHash += prime;
 			}
 		}
 	}
 	return matchIndices;
 }
- 
+
