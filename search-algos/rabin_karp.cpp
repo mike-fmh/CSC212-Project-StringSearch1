@@ -1,16 +1,19 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <math.h>
 using namespace std;
 
 vector<int> rabin_karp(string* text, string* query);
 
 int main(int argc, char* argv[]) {
-	string txt = argv[1]; // text to perform search on
-	string query = argv[2];  // what to search for
-//	query = "l";
-//	txt = "Hello world"; 
+	string txt; // text to perform search on
+	string query;  // what to search for
+
+//	query = argv[2];
+//	txt = argv[1];
+	
+	query = "world";
+	txt = "Hello world"; 
 
 
 	cout << "Input text: \"" << txt << "\"\nQuery: \"" << query << "\"\n";
@@ -68,4 +71,3 @@ vector<int> rabin_karp(string* text, string* query) {
 	}
 	return matchIndices;
 }
-
