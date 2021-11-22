@@ -3,63 +3,97 @@
 #include <string>
 
 using namespace std;
-void badChar(vector<int>* bChars, string* query);
-vector<int> boyer_moore(string* txt, string* query, vector<int>* bChars);
 
 
-int main() {
+class BMS {
+private:
+    string text;
+    string query;
+    vector<int> starts;
+    int badList[256];
+    int badVal(char b);
+    void equal(int& i);
+    void print();
+public:
+    BMS(string text, string query);
+    vector<int> getMatches();
+    void search();
+};
+
+int main(int argc, char* argv[]) {
 	string txt; // text to perform search on
 	string query;  // what to search for
 	vector<int> bChars;
 	
-	txt = "helloworld";
+    //txt = argv[1];
+    //query = argv[2];
+
+	txt = "helloworldhelloworldskworld";
 	query = "world";
-	vector<int> matches = boyer_moore(&txt, &query, &bChars);
-	
-	cout << "input txt: \"" << txt << "\"\nquery: \"" << query << "\"\n\nfound matches at in txt at indices:\n";
-	for (int i = 0; i < matches.size(); i++) {
-		cout << matches[i] << endl;
-	}
+
+    BMS matches(txt, query);
+    	
+    cout << "input txt: \"" << txt << "\"\nquery: \"" << query << "\"\n\n";
+
+    matches.search();
 }
 
-void badChar(vector<int>* bChars, string* query) {
-	int CHARNUM = 256; // length of alphabet
-	for (int i = 0; i < CHARNUM; i++) {
-		bChars->push_back(-1);
-	}
-	for (int i = 0; i < query->size(); i++) {
-		bChars->at(int(query->at(i))) = i;
-	}
+int BMS::badVal(char b) {
+    int c = b;
+    return badList[c];
 }
 
-vector<int> boyer_moore(string* txt, string* query, vector<int>* bChars) {
-	vector<int> matches;
-	badChar(bChars, query);
-	int shift = 0;
-	while (shift <= txt->size() - query->size()) {
-		int j = query->size() - 1;
-		while ((j >= 0) && (txt->at(shift + j) == query->at(j))) {
-			j--;
-		}
-		if (j < 0) {
-			matches.push_back(shift);
-			if (shift + query->size() < txt->size()) {
-				shift += query->size() - bChars->at(int(txt->at(shift + query->size())));
-			}
-			else {
-				shift++;
-			}
-		}
-		else {
-			// change shift by n if n>1, otherwise change it by 1
-			int n = j - bChars->at(int(txt->at(shift + j)));
-			if (n > 1) {
-				shift += n;
-			}
-			else {
-				shift++;
-			}
-		}
-	}
-	return matches;
+void BMS::equal(int& i) {
+    int j = query.size() - 1;
+    int shift;
+    while (j >= 0) {
+        if (text[i + j] != query[j]) {
+            shift = j - badVal(text[i + j]);
+            if (shift > 0) {
+                i += shift;
+                return;
+            }
+            else {
+                i++;
+                return;
+            }
+        }
+        j--;
+    }
+    starts.push_back(i);
+    i++;
+}
+
+void BMS::print() {
+    std::cout << "Query found at indices:";
+    for (int i = 0; i < starts.size(); i++) {
+        std::cout << ' ' << starts[i];
+    }
+}
+
+BMS::BMS(std::string text, std::string query) {
+    this->text = text;
+    this->query = query;
+    int c;
+    for (int i = 0; i < 256; i++) {
+        badList[i] = -1;
+    }
+    for (int j = 0; j < query.size(); j++) {
+        c = query[j];
+        badList[c] = j;
+    }
+}
+
+void BMS::search() {
+    int i = 0;
+    int limit = text.size() - query.size();
+    limit += 1;
+    while (i < limit) {
+        equal(i);
+    }
+    print();
+}
+
+vector<int> BMS::getMatches() {
+    return this->starts;
 }
