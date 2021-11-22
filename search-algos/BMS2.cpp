@@ -4,11 +4,14 @@
 
 class BMS{
     private:
+        //the various members we will need like our text and query string, our indice vector and our bad character array.
         std::string text;
         std::string query;
         std::vector<int> starts;
         int badList[256];
+        //badVal returns the value from the badList stored at the indice equal to the ascii value of the parameter character
         int badVal(char b);
+        //equal checks whether or not query == text at this position if not it shifts.
         void equal(int &i);
         void print();
     public:
