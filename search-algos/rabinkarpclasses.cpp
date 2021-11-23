@@ -58,6 +58,7 @@ rabin_karp::rabin_karp(string text, string query, int numLetters, int prime) {
 	this->prime = prime;
 	// calculate our h value, determined by the query.size()
 	// h will be a constant for our hashing calculations later
+	// then modulo h by our prime number to make the prime our range of the hash function
 	for (int i = 0; i < query.size() - 1; i++) {
 		this->h = (this->h * numLetters) % prime;
 	}
