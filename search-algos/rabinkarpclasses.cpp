@@ -12,11 +12,11 @@ private:
 	int numLetters = 256;
 	string text, query;
 	vector<int> matches;
-	int calculatehash(string txt, int start, int end);
 public:
 	rabin_karp(string text, string query, int numLetters, int prime);
 	void search();
 	vector<int> getmatches();
+	int calculatehash(string txt, int start, int end);
 	void print();
 };
 
@@ -46,6 +46,11 @@ rabin_karp::rabin_karp(string text, string query, int numLetters, int prime) {
 	this->prime = prime;
 
 	for (int i = 0; i < query.size() - 1; i++) {
+		// calculate our h value, it will vary with the query.size()
+		// h will be a constant used in our hashing calculations later
+		// then modulo h by our prime number, making prime the range of our hash function
+		// 
+		// so there will only be (prime) number of possible hashes we can make 
 		this->h = (this->h * numLetters) % prime;
 	}
 }
@@ -54,13 +59,20 @@ void rabin_karp::search() {
 	this->queryhash = this->calculatehash(this->query, 0, this->query.size());
 	for (int i = 0; i < 1 + this->text.size() - this->query.size(); i++) {
 		this->windowhash = this->calculatehash(this->text, i, i + this->query.size());
-
 		if (this->windowhash == this->queryhash) {
-			this->matches.push_back(i);
-		}
-		
-		if (this->windowhash < 0) {
-			this->windowhash += this->prime;
+			// if the current window == query, we may have found a match
+			// hashing doesn't always give unique values, so sometimes different strings will hash to the same value
+			// to make sure it's a match, check each letter of the query against the corresponding letter of the window
+			int j; 
+			for (j = 0; j < this->query.size(); j++) {
+				if (this->text[i + j] != this->query[j]) {
+					// if a letter doesn't match, this isn't actually a match
+					break;
+				}
+			}
+			if (j == this->query.size()) {
+				this->matches.push_back(i);
+			}
 		}
 	}
 }
@@ -69,6 +81,12 @@ int rabin_karp::calculatehash(string txt, int start, int end) {
 	int hash = 0;
 	for (int i = start; i < end; i++) {
 		hash = (this->numLetters * (hash * this->h) + int(txt[i])) % this->prime;
+	}
+
+	if (hash < 0) {
+		// sometimes we get a negative number
+		// we can make it positive using our prime number
+		hash += this->prime;
 	}
 	return hash;
 }
