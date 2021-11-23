@@ -76,9 +76,9 @@ void rabin_karp::search() {
 	for (int i = 0; i < 1 + this->text.size() - this->query.size(); i++) {
 		if (this->windowhash == this->queryhash) {
 			// if the current window == query, we may have found a match
+			// but hashing doesn't always give unique values, so sometimes different strings will hash to the same value
+			// to make sure it's a match, check each letter of the query string against the corresponding letter of the window
 			int j;
-			// hashing doesn't always give unique values, so sometimes different strings will hash to the same value
-			// to make sure it's a match, check each letter of the query against the corresponding letter of the window
 			for (j = 0; j < this->query.size(); j++) {
 				if (this->text[j + i] != this->query[j]) {
 					break;
