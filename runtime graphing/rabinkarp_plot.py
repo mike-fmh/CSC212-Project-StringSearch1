@@ -71,7 +71,7 @@ if __name__ == '__main__':
     r = 0
     b = 1000
     runtimes, textsizes = [], []
-    for i in tqdm.tqdm(range(10000)):
+    for i in tqdm.tqdm(range(10000)):  # tqdm just creates a progress meter for range()
         r = time_rk(inp, q, b)
         #print(r)
         runtimes.append(1000*r)  # convert milliseconds to seconds
