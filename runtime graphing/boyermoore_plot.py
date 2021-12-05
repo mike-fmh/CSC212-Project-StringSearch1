@@ -17,7 +17,7 @@ def badProcess(query):
     return badList
 
 
-def bmsearch(text, query):
+def search(text, query):
     i = 0
     temp = 0
     badList = badProcess(query)
@@ -43,7 +43,7 @@ def bmsearch(text, query):
     return indices
 
 
-def time_bm(txt, query, xrange, reps=10):
+def gettime(txt, query, xrange, reps=10):
     """Gets the runtime of the algorithm. Runs the for loop an amount of times == 'reps' and gets the averages to account for software inconsistencies"""
     # software inconsistencies = sometimes the cpu will proiritize other tasks which creates random spikes in runtimes
     times = []
@@ -51,14 +51,15 @@ def time_bm(txt, query, xrange, reps=10):
     sizes = []
     [sizes.append(i) for i in range(xrange - len(txt))]  # prefill with len(txt)-->1000
 
-    for _ in tqdm.tqdm(range(reps)):
+    for s in tqdm.tqdm(range(reps)):
         looptxt = txt
-        for i in range(xrange - len(txt)):
-            starttime = time.time()
-            m = bmsearch(looptxt, query)
-            endtime = time.time()
-            times[i] += endtime - starttime
-            looptxt += "a"
+        for i in (range(xrange - len(txt))):
+            if i % 100 == 1:
+                starttime = time.time()
+                m = search(looptxt, query)
+                endtime = time.time()
+                times[i] += endtime - starttime
+                looptxt += "a"
 
     for i in range(xrange-len(txt)):
         times[i] /= reps  # compute the average runtimes
@@ -76,10 +77,10 @@ def createPlot(x, y, xlabel="", ylabel="", graph_label=""):
 
 if __name__ == '__main__':
     """Takes a very long time to run - it runs the alorithm a lot in order to get average runtimes for each textsize"""
-    text = "aaaaaaaaaa"
-    query = "aaaaaaaaaa"
+    text = "a"
+    query = "a"
 
-    repetitions = 1000
-    xrange = 1000
-    runtimes, textsizes = time_bm(text, query, xrange, repetitions)
+    repetitions = 10
+    xrange = 5000000
+    runtimes, textsizes = gettime(text, query, xrange, repetitions)
     createPlot(textsizes, runtimes, "text size", "runtime (secs)", "Graph of runtimes for Boyer-Moore String Search")
