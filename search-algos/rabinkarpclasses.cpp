@@ -104,6 +104,10 @@ void rabin_karp::print() {
 		}
 		cout << this->text[i];
 	}
+	if (this->matches[this->matches.size() - 1] + this->query.size() == this->text.size()) {
+		// if there needs to be a "]" at the end
+		cout << "]";
+	}
 	cout << "\"\n\n";
 
 }
