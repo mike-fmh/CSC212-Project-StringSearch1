@@ -6,11 +6,13 @@
 
 class BMS{
     private:
-        std::string text;
-        std::string query;
-        std::vector<int> starts;
-        std::vector<int> goodList;
+        //Members:
+        std::string text; //The text that we will be searching
+        std::string query; //the string that will be searched for in the text
+        std::vector<int> starts; //This vector will hold the indices of the matches
+        std::vector<int> goodList; //This vector will hold the values we shift by (determined by the good suffix hueristic)
         std::vector<int> border;
+        //Methods
         void preProcess();
         void secondary();
         int equal(int i);
@@ -26,9 +28,16 @@ int main(int argc, char *argv[]){
     bms.print();
 }
 
+//Private:
+
 void BMS::preProcess(){
     int i = query.size();
     int j = query.size() + 1;
+    std::vector<int> border;
+    for(int i = 0; i <= query.size(); i++){
+        border.push_back(0);
+        goodList.push_back(0);
+    }
     border[i] = j;
     while( i > 0){
         while(j <= query.size() && query[j - 1] != query[i - 1]){
@@ -43,7 +52,7 @@ void BMS::preProcess(){
     }
     secondary();
 }
-void BMS::secondary(){
+void BMS::secondary(std::vector<int> border){
     int j = border.front();
     for(int i = 0; i <= query.size(); i++){
         if(!goodList[i]){
@@ -72,13 +81,11 @@ int BMS::equal(int i){
     return 1;
 }
 
+//Public:
+
 BMS::BMS(std::string text, std::string query){
     this -> text = text;
     this -> query = query;
-    for(int i = 0; i <= query.size(); i++){
-        border.push_back(0);
-        goodList.push_back(0);
-    }
 }
 
 void BMS::search(){
