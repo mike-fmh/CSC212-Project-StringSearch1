@@ -43,30 +43,39 @@ def print_matches(inp, q):
     print(out)
 
 
-def time_rk(txt, query, return_matches=0):
-    stime = time.time()
-    m = rabinkarp(txt, query)
-    etime = time.time()
+def time_rk(txt, query, batches=10):
+    """Gets the runtime of the algorithm. Runs in batches and gets the average to account for inconsistencies"""
+    runtime = 0
+    for _ in range(batches):
+        starttime = time.time()
+        m = rabinkarp(txt, query)
+        endtime = time.time()
+        runtime += (endtime - starttime)
+    runtime /= batches
+    return runtime
 
-    runtime = etime - stime
-    if return_matches:
-        return runtime, m
-    else:
-        return runtime
+
+def createPlot(x, y, xlabel="", ylabel="", graph_label=""):
+    figure, axes = pyplot.subplots()
+    axes.plot(x, y)
+    axes.set_ylabel(ylabel)
+    axes.set_xlabel(xlabel)
+    axes.set_title(graph_label)
+    pyplot.show()
 
 
 if __name__ == '__main__':
-    inp = "a"
-    q = "a"
+    inp = "aaaaaaaaaa"
+    q = "aaaaaaaaaa"
 
     r = 0
+    b = 1000
     runtimes, textsizes = [], []
     for i in tqdm.tqdm(range(10000)):
-        r, matches = time_rk(inp, q, 1)
+        r = time_rk(inp, q, b)
         #print(r)
-        runtimes.append(r)
+        runtimes.append(1000*r)
         textsizes.append(len(inp))
         inp += "a"
 
-    pl = pyplot.plot(textsizes, runtimes)
-    pyplot.show()
+    createPlot(textsizes, runtimes, "text size", "runtime (ms)", "runtimes vs text sizes, query size=10, batches="+str(b))
