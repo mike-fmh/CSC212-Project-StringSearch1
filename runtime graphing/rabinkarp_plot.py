@@ -74,7 +74,7 @@ if __name__ == '__main__':
     for i in tqdm.tqdm(range(10000)):
         r = time_rk(inp, q, b)
         #print(r)
-        runtimes.append(1000*r)
+        runtimes.append(1000*r)  # convert milliseconds to seconds
         textsizes.append(len(inp))
         inp += "a"
 
