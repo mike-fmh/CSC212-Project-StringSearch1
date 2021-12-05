@@ -43,16 +43,26 @@ def bmsearch(text, query):
     return indices
 
 
-def time_bm(txt, query, batches=10):
-    """Gets the runtime of the algorithm. Runs in batches and gets the average to account for inconsistencies"""
-    runtime = 0
-    for _ in range(batches):
-        starttime = time.time()
-        m = bmsearch(txt, query)
-        endtime = time.time()
-        runtime += (endtime - starttime)
-    runtime /= batches
-    return runtime
+def time_bm(txt, query, xrange, reps=10):
+    """Gets the runtime of the algorithm. Runs the for loop an amount of times == 'reps' and gets the averages to account for software inconsistencies"""
+    # software inconsistencies = sometimes the cpu will proiritize other tasks which creates random spikes in runtimes
+    times = []
+    [times.append(0) for i in range(xrange - len(txt))]  # prefill the list with 0s
+    sizes = []
+    [sizes.append(i) for i in range(xrange - len(txt))]  # prefill with len(txt)-->1000
+
+    for _ in tqdm.tqdm(range(reps)):
+        looptxt = txt
+        for i in range(xrange - len(txt)):
+            starttime = time.time()
+            m = bmsearch(looptxt, query)
+            endtime = time.time()
+            times[i] += endtime - starttime
+            looptxt += "a"
+
+    for i in range(xrange-len(txt)):
+        times[i] /= reps  # compute the average runtimes
+    return times, sizes
 
 
 def createPlot(x, y, xlabel="", ylabel="", graph_label=""):
@@ -65,17 +75,11 @@ def createPlot(x, y, xlabel="", ylabel="", graph_label=""):
 
 
 if __name__ == '__main__':
-    inp = "aaaaaaaaaa"
-    q = "aaaaaaaaaa"
+    """Takes a very long time to run - it runs the alorithm a lot in order to get average runtimes for each textsize"""
+    text = "aaaaaaaaaa"
+    query = "aaaaaaaaaa"
 
-    r = 0
-    b = 1000
-    runtimes, textsizes = [], []
-    for i in tqdm.tqdm(range(1000)):  # tqdm just creates a progress meter for range()
-        r = time_bm(inp, q, b)
-        #print(r)
-        runtimes.append(1000*r)  # convert milliseconds to seconds
-        textsizes.append(len(inp))
-        inp += "a"
-
-    createPlot(textsizes, runtimes, "text size", "runtime (ms)", "runtimes vs text sizes, query size=10, batches="+str(b))
+    repetitions = 1000
+    xrange = 1000
+    runtimes, textsizes = time_bm(text, query, xrange, repetitions)
+    createPlot(textsizes, runtimes, "text size", "runtime (secs)", "Graph of runtimes for Boyer-Moore String Search")
