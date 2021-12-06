@@ -119,4 +119,4 @@ if __name__ == '__main__':
     itvl = 10
     xrange = 500000
     rktimes, bmtimes, textsizes = gettime(text, query, xrange, reps, itvl)
-    createPlot(textsizes, rktimes, bmtimes, "text size", "runtime (secs)", "Graph of String Search Runtimes")
+    createPlot(textsizes, rktimes, bmtimes, "Text Size", "Runtime (secs)", "Graph of String Search Runtimes")
