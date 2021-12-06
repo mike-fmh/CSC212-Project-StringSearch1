@@ -9,7 +9,7 @@ def badProcess(query):
         badList.append(-1)
         i = i + 1
     j = 0
-    n = 0;
+    n = 0
     for j in query:
         v = ord(j)
         badList[v] = n
@@ -88,7 +88,8 @@ if __name__ == '__main__':
     query = "a"
 
     reps = 10
-    itvl = 100
-    xrange = 5000000
+    itvl = 10
+    xrange = 500000
+
     runtimes, textsizes = gettime(text, query, xrange, reps, itvl)
-    createPlot(textsizes, runtimes, "text size", "runtime (secs)", "Graph of runtimes for Boyer-Moore String Search")
+    createPlot(textsizes, runtimes, "text size", "runtime (secs)", "Graph of runtimes for Boyer-Moore (Bad Suffix) String Search")
