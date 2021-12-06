@@ -103,7 +103,7 @@ def gettime(txt, query, xrange, reps, intvl):
 def createPlot(x, rky, bmy, xlabel="", ylabel="", graph_label=""):
     figure, axes = pyplot.subplots()
     axes.plot(x, rky, label="Rabin-Karp")
-    axes.plot(x, bmy, label="Boyer-Moore (Bad Suffix)")
+    axes.plot(x, bmy, label="Boyer-Moore (Bad Char)")
     axes.set_ylabel(ylabel)
     axes.set_xlabel(xlabel)
     axes.set_title(graph_label)
