@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
     reps = 10
     itvl = 10
-    xrange = 500000
+    xrange = 50000
 
     runtimes, textsizes = gettime(text, query, xrange, reps, itvl)
     createPlot(textsizes, runtimes, "Text Size", "Runtime (secs)", "Graph of runtimes for Boyer-Moore (Good Suffix) String Search")
