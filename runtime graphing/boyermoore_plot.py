@@ -52,7 +52,7 @@ def gettime(txt, query, xrange, reps, intvl):
     for s in tqdm.tqdm(range(reps)):
         looptxt = txt
         for i in (range(xrange - len(txt))):
-            if i % intvl == 1:
+            if i % intvl == 0:
                 starttime = time.time()
                 m = search(looptxt, query)
                 endtime = time.time()
