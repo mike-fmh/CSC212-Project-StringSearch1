@@ -43,9 +43,7 @@ def print_matches(inp, q):
     print(out)
 
 
-def gettime(txt, query, xrange, reps=10):
-    """Gets the runtime of the algorithm. Runs the for loop an amount of times == 'reps' and gets the averages to account for software inconsistencies"""
-    # software inconsistencies = sometimes the cpu will proiritize other tasks which creates random spikes in runtimes
+def gettime(txt, query, xrange, reps, intvl):
     times = []
     [times.append(0) for i in range(xrange - len(txt))]  # prefill the list with 0s
     sizes = []
@@ -54,7 +52,7 @@ def gettime(txt, query, xrange, reps=10):
     for s in tqdm.tqdm(range(reps)):
         looptxt = txt
         for i in (range(xrange - len(txt))):
-            if i % 100 == 1:
+            if i % intvl == 1:
                 starttime = time.time()
                 m = search(looptxt, query)
                 endtime = time.time()
@@ -76,11 +74,21 @@ def createPlot(x, y, xlabel="", ylabel="", graph_label=""):
 
 
 if __name__ == '__main__':
-    """Takes a very long time to run - it runs the alorithm a lot in order to get average runtimes for each textsize"""
+    # HOW IT WORKS
+    #
+    # with textsize starting at n=1, this script runs the search algo on a textsize of n up until (n==xrange) on intervals of (itvl).
+    # then, it repeats the above (reps) times to compute the average runtimes
+    # finally it plots a graph with the data
+    #
+    # it takes a long time to run because I chose a very large xrange to minimize software inconsistencies
+    # taking the average is supposed to do that but I thought a large xrange might help also
+    # (software inconsistencies = sometimes the runtimes are 'off' due to random fluxuations in how the computer prioritizes python)
+
     text = "a"
     query = "a"
 
-    repetitions = 10
+    reps = 10
+    itvl = 100
     xrange = 5000000
-    runtimes, textsizes = gettime(text, query, xrange, repetitions)
+    runtimes, textsizes = gettime(text, query, xrange, reps, itvl)
     createPlot(textsizes, runtimes, "text size", "runtime (secs)", "Graph of runtimes for Rabin-Karp String Search")
