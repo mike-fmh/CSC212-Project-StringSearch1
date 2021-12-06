@@ -177,7 +177,7 @@ def gettime(txt, query, xrange, reps, intvl):
 def createPlot(x, gx, bx, dx, xlabel="", ylabel="", graph_label=""):
     figure, axes = pyplot.subplots()
     axes.plot(x, gx, label="Good Suffix")
-    axes.plot(x, bx, label="Bad Suffix")
+    axes.plot(x, bx, label="Bad Char")
     axes.plot(x, dx, label="Dual")
     axes.set_ylabel(ylabel)
     axes.set_xlabel(xlabel)
@@ -187,7 +187,7 @@ def createPlot(x, gx, bx, dx, xlabel="", ylabel="", graph_label=""):
 
 
 if __name__ == '__main__':
-    """Compares Buyer-Moore Good Suffix vs Bad vs Dual"""
+    """Compares Boyer-Moore Good Suffix vs Bad vs Dual"""
     text = "a"
     query = "a"
 
@@ -195,4 +195,4 @@ if __name__ == '__main__':
     itvl = 10
     xrange = 500000
     bTimes, gTimes, dTimes, textsizes = gettime(text, query, xrange, reps, itvl)
-    createPlot(textsizes, bTimes, gTimes, dTimes, "Text Size", "Runtime (secs)", "Graph of runtimes for Buyer-Moore variations")
+    createPlot(textsizes, bTimes, gTimes, dTimes, "Text Size", "Runtime (secs)", "Graph of runtimes for Boyer-Moore variations")
