@@ -103,7 +103,7 @@ def gettime(txt, query, xrange, reps, intvl):
 def createPlot(x, rky, bmy, xlabel="", ylabel="", graph_label=""):
     figure, axes = pyplot.subplots()
     axes.plot(x, rky, label="Rabin-Karp")
-    axes.plot(x, bmy, label="Boyer-Moore")
+    axes.plot(x, bmy, label="Boyer-Moore (Bad Suffix)")
     axes.set_ylabel(ylabel)
     axes.set_xlabel(xlabel)
     axes.set_title(graph_label)
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     query = "a"
 
     reps = 10
-    itvl = 100
-    xrange = 5000000
+    itvl = 10
+    xrange = 500000
     rktimes, bmtimes, textsizes = gettime(text, query, xrange, reps, itvl)
     createPlot(textsizes, rktimes, bmtimes, "text size", "runtime (secs)", "Graph of String Search Runtimes")
