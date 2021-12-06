@@ -44,8 +44,6 @@ def search(text, query):
 
 
 def gettime(txt, query, xrange, reps, intvl):
-    """Gets the runtime of the algorithm. Runs the for loop an amount of times == 'reps' and gets the averages to account for software inconsistencies"""
-    # software inconsistencies = sometimes the cpu will proiritize other tasks which creates random spikes in runtimes
     times = []
     [times.append(0) for i in range(xrange - len(txt))]  # prefill the list with 0s
     sizes = []
