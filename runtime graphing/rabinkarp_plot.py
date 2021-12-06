@@ -88,7 +88,7 @@ if __name__ == '__main__':
     query = "a"
 
     reps = 10
-    itvl = 100
-    xrange = 5000000
+    itvl = 10
+    xrange = 500000
     runtimes, textsizes = gettime(text, query, xrange, reps, itvl)
     createPlot(textsizes, runtimes, "text size", "runtime (secs)", "Graph of runtimes for Rabin-Karp String Search")
