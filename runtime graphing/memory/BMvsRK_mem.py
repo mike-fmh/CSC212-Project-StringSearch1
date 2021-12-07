@@ -98,7 +98,7 @@ def getmem(txt, query, xrange, reps, intvl):
         RKmems[i] /= reps  # compute the average runtimes
         BMmems[i] /= reps
 
-        if RKmems[i] != 0:
+        if RKmems[i] != 0:  # remove any 0s (only needed when intv > 1)
             RKlast = RKmems[i]
         else:
             RKmems[i] = RKlast
