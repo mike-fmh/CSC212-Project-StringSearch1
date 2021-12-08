@@ -167,10 +167,14 @@ def gettime(txt, query, xrange, reps, intvl):
 
                 looptxt += "a"
 
+    blast = badTimes[0]
+    glast = goodTimes[0]
+    dlast = dualTimes[0]
     for i in range(xrange-len(txt)):
         badTimes[i] /= reps  # compute the average runtimes
         goodTimes[i] /= reps
         dualTimes[i] /= reps
+
     return badTimes, goodTimes, dualTimes, sizes
 
 

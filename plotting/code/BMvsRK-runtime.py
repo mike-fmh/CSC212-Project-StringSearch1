@@ -97,6 +97,23 @@ def gettime(txt, query, xrange, reps, intvl):
     for i in range(xrange-len(txt)):
         RKtimes[i] /= reps  # compute the average runtimes
         BMtimes[i] /= reps
+
+    RKlast = RKtimes[0]
+    BMlast = BMtimes[0]
+    for i in range(xrange - len(txt)):
+        RKtimes[i] /= reps
+        BMtimes[i] /= reps  # compute the average runtimes
+
+        if BMtimes[i] != 0:
+            BMlast = BMtimes[i]
+        else:
+            BMtimes[i] = BMlast
+
+        if RKtimes[i] != 0:
+            RKlast = RKtimes[i]
+        else:
+            RKtimes[i] = RKlast
+
     return RKtimes, BMtimes, sizes
 
 
