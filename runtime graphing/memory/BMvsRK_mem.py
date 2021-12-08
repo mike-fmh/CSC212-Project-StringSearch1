@@ -4,25 +4,26 @@ from guppy import hpy
 from matplotlib import pyplot
 
 
-def badProcess(query):
+def badProcess(query, mainmem):
     badList = []
     i = 0
     while(i < 256):
         badList.append(-1)
         i = i + 1
     j = 0
-    n = 0;
+    n = 0
     for j in query:
         v = ord(j)
         badList[v] = n
         n = n + 1
-    return badList
+    mem = (hpy().heap().size / 1000000) - mainmem
+    return badList, mem
 
 
-def BM(text, query):
+def BM(text, query, mainmem):
     i = 0
     temp = 0
-    badList = badProcess(query)
+    badList, heurmem = badProcess(query, mainmem)
     indices = []
     complete = True
     j = len(query) - 1
@@ -42,11 +43,11 @@ def BM(text, query):
         if complete:
             indices.append(i)
             i += 1
-    mem = hpy().heap().size / 1000000
+    mem = (hpy().heap().size / 1000000) - mainmem + heurmem
     return indices, mem
 
 
-def RK(text, query):
+def RK(text, query, mainmem):
     h, prime, alphabet = 1, 101, 256
     for i in range(len(query) - 1):
         h = (h * alphabet) % prime
@@ -69,11 +70,11 @@ def RK(text, query):
             whash = (alphabet * (whash - ord(text[i]) * h) + ord(text[i + len(query)])) % prime
             if whash < 0:
                 whash += prime
-    mem = hpy().heap().size / 1000000
+    mem = (hpy().heap().size / 1000000) - mainmem
     return matches, mem
 
 
-def getmem(txt, query, xrange, reps, intvl):
+def getmem(txt, query, xrange, reps, intvl, mainmem):
     RKmems = []
     [RKmems.append(0) for i in range(xrange - len(txt))]  # prefill the list with 0s
     BMmems = []
@@ -85,10 +86,10 @@ def getmem(txt, query, xrange, reps, intvl):
         looptxt = txt
         for i in tqdm.tqdm(range(xrange - len(txt))):
             if i % intvl == 0:
-                matches, mem = RK(looptxt, query)
+                matches, mem = RK(looptxt, query, mainmem)
                 RKmems[i] += mem
 
-                matches, mem = BM(looptxt, query)
+                matches, mem = BM(looptxt, query, mainmem)
                 BMmems[i] += mem
                 looptxt += "a"
 
@@ -125,9 +126,9 @@ def createPlot(x, rky, bmy, xlabel="", ylabel="", graph_label=""):
 if __name__ == '__main__':
     text = "a"
     query = "a"
-
+    mem = hpy().heap().size / 1000000
     reps = 1
     itvl = 1
-    xrange = 50000
-    rktimes, bmtimes, textsizes = getmem(text, query, xrange, reps, itvl)
+    xrange = 5000
+    rktimes, bmtimes, textsizes = getmem(text, query, xrange, reps, itvl, mem)
     createPlot(textsizes, rktimes, bmtimes, "Text Size", "Memory Usage (MB)", "Memory Usage of String Search Algorithms")
