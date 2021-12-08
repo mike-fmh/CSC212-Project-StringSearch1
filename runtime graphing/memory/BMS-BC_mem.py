@@ -3,7 +3,7 @@ import time
 from matplotlib import pyplot
 from guppy import hpy
 
-def badProcess(query):
+def badProcess(query, mainmem):
     badList = []
     i = 0
     while(i < 256):
@@ -15,13 +15,14 @@ def badProcess(query):
         v = ord(j)
         badList[v] = n
         n = n + 1
-    return badList
+    mem = (hpy().heap().size / 1000000) - mainmem
+    return badList, mem
 
 
-def search(text, query):
+def search(text, query, mainmem):
     i = 0
     temp = 0
-    badList = badProcess(query)
+    badList, heurmem = badProcess(query, mainmem)
     indices = []
     complete = True
     j = len(query) - 1
@@ -41,26 +42,22 @@ def search(text, query):
         if complete:
             indices.append(i)
             i += 1
-    mem = hpy().heap().size / 1000000
+
+    #print(hpy().heap())
+    mem = (hpy().heap().size / 1000000) - mainmem + heurmem
     return indices, mem
 
 
-def getmem(txt, query, xrange, reps, intvl):
+def getmem(txt, query, xrange, reps, intvl, mainmem):
     mems = []
-    [mems.append(0) for i in range(xrange - len(txt))]  # prefill the list with 0s
     sizes = []
-    [sizes.append(i) for i in range(xrange - len(txt))]  # prefill with len(txt)-->1000
 
-    for s in (range(reps)):
-        looptxt = txt
-        for i in tqdm.tqdm(range(xrange - len(txt))):
-            if i % intvl == 0:
-                matches, mem = search(looptxt, query)
-                mems[i] += mem
-                looptxt += "a"
-
-    for i in range(xrange - len(txt)):
-        mems[i] /= reps  # compute the average runtimes
+    for i in tqdm.tqdm(range(xrange - len(txt))):
+        if i % intvl == 0:
+            matches, mem = search(txt, query, mainmem)
+            mems.append(mem)
+            sizes.append(len(txt))
+            txt += "a"
 
     return mems, sizes
 
@@ -80,7 +77,7 @@ if __name__ == '__main__':
 
     reps = 1
     itvl = 1
-    xrange = 50000
-
-    runtimes, textsizes = getmem(text, query, xrange, reps, itvl)
+    xrange = 5000
+    mem = hpy().heap().size / 1000000
+    runtimes, textsizes = getmem(text, query, xrange, reps, itvl, mem)
     createPlot(textsizes, runtimes, "Text Size", "Memory Usage (MB)", "Memory Usage of Boyer-Moore (Bad Char) Algorithm")
