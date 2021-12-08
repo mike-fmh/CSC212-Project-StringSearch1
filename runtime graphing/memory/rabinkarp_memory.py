@@ -27,6 +27,7 @@ def search(text, query):
             if whash < 0:
                 whash += prime
 
+  #  print(hpy().heap())
     mem = hpy().heap().size/1000000  # gives memory, divide by 1000000 to convert bytes to MB
     return matches, mem
 
@@ -47,20 +48,14 @@ def print_matches(inp, q):
 
 def getmem(txt, query, xrange, reps, intvl):
     mems = []
-    [mems.append(0) for i in range(xrange - len(txt))]  # prefill the list with 0s
     sizes = []
-    [sizes.append(i) for i in range(xrange - len(txt))]  # prefill with len(txt)-->1000
 
-    for s in (range(reps)):
-        looptxt = txt
-        for i in tqdm.tqdm(range(xrange - len(txt))):
-            if i % intvl == 0:
-                matches, mem = search(looptxt, query)
-                mems[i] += mem
-                looptxt += "a"
-
-    for i in range(xrange - len(txt)):
-        mems[i] /= reps  # compute the average runtimes
+    for i in tqdm.tqdm(range(xrange - len(txt))):
+        if i % intvl == 0:
+            matches, mem = search(txt, query)
+            mems.append(mem)
+            sizes.append(len(txt))
+            txt += "a"
 
     return mems, sizes
 
