@@ -183,8 +183,8 @@ if __name__ == '__main__':
     text = "a"
     query = "a"
     reps = 1
-    itvl = 20
-    xrange = 5000
+    itvl = 10
+    xrange = 500
     mainmem = hpy().heap().size / 1000000
     bTimes, gTimes, dTimes, textsizes, mem = gettime(text, query, xrange, reps, itvl, mainmem)
     createPlot(textsizes, bTimes, gTimes, dTimes, "Text Size", "Memory (MB)", "Memory measured on intervals of {} text sizes".format(itvl))
