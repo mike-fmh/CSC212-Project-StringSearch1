@@ -94,10 +94,6 @@ def gettime(txt, query, xrange, reps, intvl):
 
             looptxt += "a"
 
-    for i in range(xrange-len(txt)):
-        RKtimes[i] /= reps  # compute the average runtimes
-        BMtimes[i] /= reps
-
     RKlast = RKtimes[0]
     BMlast = BMtimes[0]
     for i in range(xrange - len(txt)):
@@ -132,8 +128,8 @@ if __name__ == '__main__':
     text = "a"
     query = "a"
 
-    reps = 10
+    reps = 1000
     itvl = 20
     xrange = 5000
     rktimes, bmtimes, textsizes = gettime(text, query, xrange, reps, itvl)
-    createPlot(textsizes, rktimes, bmtimes, "Text Size", "Runtime (secs)", "Graph of String Search Runtimes")
+    createPlot(textsizes, rktimes, bmtimes, "Text Size", "Runtime (secs)", "intervals of {}, average of {} samples".format(itvl, reps))
