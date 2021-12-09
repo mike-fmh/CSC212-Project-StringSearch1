@@ -83,7 +83,6 @@ void main_menu() {
 void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites, int* framnum) {
     // reset the screen for the algorithms
     (*framnum)++;
-    cout << "\nframe #" << (*framnum);
     window->clear(sf::Color::White);
     sf::Font f;
     f.loadFromFile("font.ttf");
@@ -98,7 +97,6 @@ void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, s
     for (int i = 0; i < text->size(); i++) {
         sf::Texture newTexture;
         letters->push_back(newTexture);
-        cout << tolower((*text)[i]) << " ";
         (*letters)[i].loadFromFile(std::to_string(std::tolower((*text)[i])) + ".png");
         letterSprites->push_back(sf::Sprite((*letters)[i]));
         (*letterSprites)[i].setPosition(40 + i * 70, 400);
@@ -111,7 +109,7 @@ void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, s
 
 void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites) {
     (*query) = "world";
-    (*text) = "hello, world";
+    (*text) = "hello world";
 
     window->setFramerateLimit(1); // wait 1 sec between updating screens
 
@@ -138,7 +136,6 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
     }
 
     for (int i = 0; i < (text->size() - query->size() + 1); i++) {
-        cout << " " << i << std::endl;
         r_screen(window, query, text, letters, letterSprites, &framenum);
         for (int n = 0; n < query->size(); n++) {
             (*letterSprites)[n + i].setColor(sf::Color::Yellow);
@@ -175,25 +172,6 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
         }
     }
 
-    cout << "\n>>\"";
-    for (int i = 0; i < text->size(); i++) {
-        for (int n = 0; n < matchIndices.size(); n++) {
-            if (i == matchIndices[n]) {
-                cout << "[";
-            }
-            if (i == matchIndices[n] + query->size()) {
-                cout << "]";
-            }
-        }
-        cout << (*text)[i];
-    }
-    if (matchIndices[matchIndices.size() - 1] + query->size() == text->size()) {
-        // if there needs to be a "]" at the end
-        cout << "]";
-    }
-    cout << "\"\n\n";
-
-
     r_screen(window, query, text, letters, letterSprites, &framenum);
     for (int i = 0; i < letterSprites->size(); i++) {
 
@@ -205,7 +183,6 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
         }
     }
     window->display();
-
 
     bool s = 1;
     // wait for esc press
@@ -250,8 +227,6 @@ void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::ve
     r_screen(window, query, text, letters, letterSprites, &framenum);
     window->display();
     
-
-
     vector<int> bChars, matches;
     badChar(&bChars, query);
     int shift = 0;
@@ -305,11 +280,6 @@ void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::ve
         }
     }
     window->display();
-
-
-
-
-
 
     bool s = 1;
     // wait for esc press
