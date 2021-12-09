@@ -85,12 +85,12 @@ def gettime(txt, query, xrange, reps, intvl):
                 starttime = time.time()
                 m = BM(looptxt, query)
                 endtime = time.time()
-                BMtimes[i] += endtime - starttime
+                BMtimes[i] += (endtime - starttime) * 1000
 
                 starttime = time.time()
                 m = RK(looptxt, query)
                 endtime = time.time()
-                RKtimes[i] += endtime - starttime
+                RKtimes[i] += (endtime - starttime) * 1000
 
             looptxt += "a"
 
@@ -132,4 +132,4 @@ if __name__ == '__main__':
     itvl = 20
     xrange = 5000
     rktimes, bmtimes, textsizes = gettime(text, query, xrange, reps, itvl)
-    createPlot(textsizes, rktimes, bmtimes, "Text Size", "Runtime (secs)", "intervals of {}, average of {} samples".format(itvl, reps))
+    createPlot(textsizes, rktimes, bmtimes, "Text Size", "Runtime (ms)", "intervals of {}, average of {} samples".format(itvl, reps))
