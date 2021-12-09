@@ -1,0 +1,1 @@
+when running main.cpp for the gui, you need to move these files into its directory
