@@ -4,7 +4,7 @@
 
 class BMS{
     private:
-        //the various members we will need like our text and query string, our indice vector and our bad character array.
+        //the various members we will need like our text and query string, our indice vector and our badList vector.
         //members:
         std::string text; //string holding the text that will be searched
         std::string query; //string holding the query we are searching for within text
@@ -13,7 +13,7 @@ class BMS{
         //methods:
         void badProcess();
         int badVal(char b); //badVal returns the value from the badList stored at the indice equal to the ascii value of the parameter character
-        void equal(int &i); //equal checks whether or not query == text at this position if not it shifts.
+        void equal(int &i); //equal checks whether or not query == substring text at this position if not it shifts using j and the badlist, if query == substring of text it shifts by just 1.
         void print();
     public:
         BMS(std::string text, std::string query); //assigns the value of text and query based on the command line arguments entered
@@ -21,15 +21,18 @@ class BMS{
 };
 
 int main(int argc, char *argv[]){
-    BMS bms(argv[1], argv[2]);
-    bms.search();
+    BMS bms(argv[1], argv[2]); //calling the constructor
+    bms.search(); //calls the search method
 }
 
 void BMS::badProcess(){
+    //intiallizes the vector with -1
     int c;
     for(int i = 0; i < 256; i++){
         badList.push_back(-1);
     }
+    //assigns the values at the index of the character's ascii value with the character's index within the query.
+    //this will leave us with a vector containing -1s for any character that is not found within query and for characters in query the index of their last position within the query
     for(int j = 0; j < query.size(); j++){
         c = query[j];
         badList[c] = j;
@@ -37,12 +40,13 @@ void BMS::badProcess(){
 }
 
 int BMS::badVal(char b){
+    //function that converts the char paremter to its ascii value then returns the value found at that index with badList
     int c = b;
     return badList[c];
 }
 
 void BMS::equal(int &i){
-    int j = query.size() - 1;
+    int j = query.size() - 1; //this initializes j to the last index of query
     int shift;
     while(j >= 0){
         if(text[i + j] != query[j]){
@@ -103,5 +107,5 @@ void BMS::search(){
     while(i < limit){
         equal(i);
     }
-    print();
+    print(); //print is called to return the location of the query within the text
 }
