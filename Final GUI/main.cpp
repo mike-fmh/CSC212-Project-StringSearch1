@@ -51,7 +51,7 @@ void main_menu() {
                         std::vector<sf::Texture> letters;
                         std::vector<sf::Sprite> Lsprites;
                         rabin(&window, &query, &text, &letters, &Lsprites);
-
+                       
                     }
                     else if (menu.getPressedItem() == 1) {
                         std::cout << "Play is pressed" << std::endl;
@@ -94,7 +94,7 @@ void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, s
 
     (*letters) = {};
     (*letterSprites) = {};
-
+    
     for (int i = 0; i < text->size(); i++) {
         sf::Texture newTexture;
         letters->push_back(newTexture);
@@ -104,7 +104,7 @@ void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, s
         (*letterSprites)[i].setPosition(40 + i * 70, 400);
 
         window->draw((*letterSprites)[i]);
-
+        
     }
 }
 
@@ -226,6 +226,7 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
             }
         }
     }
+    window->close();
     main_menu();
 }
 
@@ -243,12 +244,12 @@ void badChar(vector<int>* bChars, string* query) {
 void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites) {
     window->setFramerateLimit(1); // wait 1 sec between updating screens
     (*query) = "world";
-    (*text) = "hello world";
+    (*text) = "hello, world";
     int framenum = 0;
 
     r_screen(window, query, text, letters, letterSprites, &framenum);
     window->display();
-
+    
 
 
     vector<int> bChars, matches;
@@ -329,6 +330,7 @@ void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::ve
             }
         }
     }
+    window->close();
     main_menu();
 
 }
