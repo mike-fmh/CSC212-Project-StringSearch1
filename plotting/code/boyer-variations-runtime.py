@@ -10,7 +10,7 @@ def badProcess(query):
         badList.append(-1)
         i = i + 1
     j = 0
-    n = 0;
+    n = 0
     for j in query:
         v = ord(j)
         badList[v] = n
@@ -153,19 +153,19 @@ def gettime(txt, query, xrange, reps, intvl):
                 starttime = time.time()
                 m = BMbad(looptxt, query)
                 endtime = time.time()
-                badTimes[i] += endtime - starttime
+                badTimes[i] += (endtime - starttime) * 1000
 
                 starttime = time.time()
                 m = BMgood(looptxt, query)
                 endtime = time.time()
-                goodTimes[i] += endtime - starttime
+                goodTimes[i] += (endtime - starttime) * 1000
 
                 starttime = time.time()
                 m = BMdual(looptxt, query)
                 endtime = time.time()
-                dualTimes[i] += endtime - starttime
-
-                looptxt += "a"
+                dualTimes[i] += (endtime - starttime) * 1000
+                for _ in range(itvl):
+                    looptxt += "a"
 
     blast = badTimes[0]
     glast = goodTimes[0]
@@ -174,6 +174,19 @@ def gettime(txt, query, xrange, reps, intvl):
         badTimes[i] /= reps  # compute the average runtimes
         goodTimes[i] /= reps
         dualTimes[i] /= reps
+
+        if badTimes[i] != 0:  # set 0s to last available datapoint (only needed if interval > 1)
+            blast = badTimes[i]
+        else:
+            badTimes[i] = blast
+        if goodTimes[i] != 0:
+            glast = goodTimes[i]
+        else:
+            goodTimes[i] = glast
+        if dualTimes[i] != 0:
+            dlast = dualTimes[i]
+        else:
+            dualTimes[i] = dlast
 
     return badTimes, goodTimes, dualTimes, sizes
 
@@ -195,8 +208,8 @@ if __name__ == '__main__':
     text = "a"
     query = "a"
 
-    reps = 10
-    itvl = 10
-    xrange = 500000
+    reps = 1000
+    itvl = 20
+    xrange = 5000
     bTimes, gTimes, dTimes, textsizes = gettime(text, query, xrange, reps, itvl)
-    createPlot(textsizes, bTimes, gTimes, dTimes, "Text Size", "Runtime (secs)", "Graph of runtimes for Boyer-Moore variations")
+    createPlot(textsizes, bTimes, gTimes, dTimes, "Text Size", "Runtime (ms)", "intervals of {}, average of {} samples".format(itvl, reps))
