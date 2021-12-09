@@ -92,7 +92,7 @@ def gettime(txt, query, xrange, reps, intvl):
                 endtime = time.time()
                 RKtimes[i] += endtime - starttime
 
-                looptxt += "a"
+            looptxt += "a"
 
     for i in range(xrange-len(txt)):
         RKtimes[i] /= reps  # compute the average runtimes
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     query = "a"
 
     reps = 10
-    itvl = 10
-    xrange = 500000
+    itvl = 20
+    xrange = 5000
     rktimes, bmtimes, textsizes = gettime(text, query, xrange, reps, itvl)
     createPlot(textsizes, rktimes, bmtimes, "Text Size", "Runtime (secs)", "Graph of String Search Runtimes")
