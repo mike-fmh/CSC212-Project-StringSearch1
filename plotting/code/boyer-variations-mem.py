@@ -11,7 +11,7 @@ def badProcess(query, mainmem):
         badList.append(-1)
         i = i + 1
     j = 0
-    n = 0;
+    n = 0
     for j in query:
         v = ord(j)
         badList[v] = n
@@ -159,7 +159,8 @@ def gettime(txt, query, xrange, reps, intvl, mainmem):
             matches, dmem = BMdual(txt, query, mainmem)
             dualTimes.append(dmem)
             sizes.append(len(txt))
-            txt += "a"
+
+        txt += "a"
 
     mem = (hpy().heap().size / 1000000) - mainmem + dmem + bmem + gmem
     return badTimes, goodTimes, dualTimes, sizes, mem
@@ -181,9 +182,9 @@ if __name__ == '__main__':
     """Compares Boyer-Moore Good Suffix vs Bad vs Dual"""
     text = "a"
     query = "a"
-    reps = 10
-    itvl = 10
-    xrange = 5000
+    reps = 1
+    itvl = 2000
+    xrange = 500000
     mainmem = hpy().heap().size / 1000000
     bTimes, gTimes, dTimes, textsizes, mem = gettime(text, query, xrange, reps, itvl, mainmem)
-    createPlot(textsizes, bTimes, gTimes, dTimes, "Text Size", "Memory (MB)", "Boyer-Moore Variations Memory Usage")
+    createPlot(textsizes, bTimes, gTimes, dTimes, "Text Size", "Memory (MB)", "Memory measured on intervals of {} text sizes".format(itvl))
