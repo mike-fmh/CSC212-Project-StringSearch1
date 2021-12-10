@@ -10,4 +10,4 @@ Instructions to run code:
 
 1. Copy or download .cpp files into Visual Studio.
 2. Compile and run it on Visual Studio.
-3. 3 download and setup SFML https://www.sfml-dev.org/tutorials/2.5/start-vc.php
+3. Download and setup SFML https://www.sfml-dev.org/tutorials/2.5/start-vc.php
