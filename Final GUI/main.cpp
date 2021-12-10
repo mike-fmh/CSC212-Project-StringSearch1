@@ -2,21 +2,33 @@
 #include <vector>
 #include <string>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "MainMenu.h"
 
 using namespace std;
 
 void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites);
 void badChar(vector<int>* bChars, string* query);
-void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites);
-void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites);
-void main_menu();
+void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites, sf::Music* music);
+void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites, sf::Music* music);
+int main_menu(sf::Music *music);
 
 int main() {
-    main_menu();
+
+    //Added music for fun!
+    sf::Music music;
+
+    if (!music.openFromFile("awesomeness.wav"))
+    {
+        std::cout << "ERROR" << std::endl;
+    }
+
+    music.play();
+    main_menu(&music);
 }
 
-void main_menu() {
+int main_menu(sf::Music *music) {
+
     std::string query, text;
     //creates a window
     sf::RenderWindow window(sf::VideoMode(500, 500), "CSC 212 Final Project");
@@ -36,6 +48,13 @@ void main_menu() {
             case sf::Event::KeyReleased:
                 switch (Event.key.code)
                 {
+
+                case sf::Keyboard::S:
+                    music->pause();
+                    break;
+                case sf::Keyboard::P:
+                    music->play();
+                    break;
                 case sf::Keyboard::Up:
                     menu.MoveUp();
                     break;
@@ -46,7 +65,7 @@ void main_menu() {
 
                 case sf::Keyboard::Escape:
                     window.close();
-                    break;
+                    return 0;
 
                 case sf::Keyboard::Return:
                     if (menu.getPressedItem() == 0) {
@@ -57,7 +76,7 @@ void main_menu() {
                         std::vector<sf::Texture> letters;
                         std::vector<sf::Sprite> Lsprites;
                         sf::RenderWindow algo_win(sf::VideoMode(840, 500), "Rabin-Karp Visualization");
-                        rabin(&algo_win, &query, &text, &letters, &Lsprites);
+                        rabin(&algo_win, &query, &text, &letters, &Lsprites, music);
                         break;
                     }
                     else if (menu.getPressedItem() == 1) {
@@ -68,13 +87,13 @@ void main_menu() {
                         std::vector<sf::Texture> letters;
                         std::vector<sf::Sprite> Lsprites;
                         sf::RenderWindow algo_win(sf::VideoMode(840, 500), "Boyer-Moore Visualization");
-                        BM(&algo_win, &query, &text, &letters, &Lsprites);
+                        BM(&algo_win, &query, &text, &letters, &Lsprites, music);
                         break;
                     }
                     else if (menu.getPressedItem() == 2) {
                         // exit
                         window.close();
-                        break;
+                        return 0;
                     }
                 }
                 break;
@@ -110,7 +129,7 @@ void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, s
         letters->push_back(newTexture);
         (*letters)[i].loadFromFile(std::to_string(std::tolower((*text)[i])) + ".png");
         letterSprites->push_back(sf::Sprite((*letters)[i]));
-        
+
         int spacing = 70;
         int ypos = 300;
         int startx = 40;
@@ -122,7 +141,7 @@ void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, s
 }
 
 
-void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites) {
+void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites, sf::Music * music) {
     window->setFramerateLimit(1); // wait 1 sec between each window->display()
     r_screen(window, query, text, letters, letterSprites);
     window->display();
@@ -130,7 +149,7 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
     // rabin-karp implementation
     vector<int> matchIndices;
     int prime = 101;
-    int numLetters = 256; 
+    int numLetters = 256;
     int h = 1;
     for (int i = 0; i < query->size() - 1; i++) {
         h = (h * numLetters) % prime;
@@ -206,13 +225,21 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
                 {
                 case sf::Keyboard::Escape:
                     s = false;
+                    // close the window and reopen main menu
+                    window->close();
+                    main_menu(music);
                 }
+                case sf::Keyboard::Space:
+                    window->close();
+                    std::vector<sf::Texture> letters;
+                    std::vector<sf::Sprite> Lsprites;
+                    sf::RenderWindow algo_win(sf::VideoMode(840, 500), "Rabin-Karp Visualization");
+                    rabin(&algo_win, query, text, &letters, &Lsprites, music);
+                    break;
+
             }
         }
     }
-    // close the window and reopen main menu
-    window->close();
-    main_menu();
 }
 
 
@@ -226,7 +253,7 @@ void badChar(vector<int>* bChars, string* query) {
     }
 }
 
-void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites) {
+void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites, sf::Music* music) {
     window->setFramerateLimit(1); // wait 1 sec between each window->display()
     r_screen(window, query, text, letters, letterSprites);
     window->display();
@@ -300,11 +327,18 @@ void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::ve
                 {
                 case sf::Keyboard::Escape:
                     s = 0;
+                    // close the window and reopen main menu
+                    window->close();
+                    main_menu(music);
                 }
+                case sf::Keyboard::Space:
+                    window->close();
+                    std::vector<sf::Texture> letters;
+                    std::vector<sf::Sprite> Lsprites;
+                    sf::RenderWindow algo_win(sf::VideoMode(840, 500), "Boyer-Moore Visualization");
+                    BM(&algo_win, query, text, &letters, &Lsprites, music);
+                    break;
             }
         }
     }
-    // close the window and reopen main menu
-    window->close();
-    main_menu();
 }
