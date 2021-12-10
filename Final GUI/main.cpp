@@ -3,10 +3,10 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "MainMenu.h"
-//#include "Textbox.h"
+
 using namespace std;
 
-void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites, int* framnum);
+void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites);
 void badChar(vector<int>* bChars, string* query);
 void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites);
 void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites);
@@ -19,7 +19,7 @@ int main() {
 void main_menu() {
     std::string query, text;
     //creates a window
-    sf::RenderWindow window(sf::VideoMode(1000, 800), "CSC 212 Final Project");
+    sf::RenderWindow window(sf::VideoMode(500, 500), "CSC 212 Final Project");
 
     MainMenu menu(window.getSize().x, window.getSize().y);
 
@@ -44,24 +44,35 @@ void main_menu() {
                     menu.MoveDown();
                     break;
 
+                case sf::Keyboard::Escape:
+                    window.close();
+                    break;
+
                 case sf::Keyboard::Return:
                     if (menu.getPressedItem() == 0) {
-                        std::cout << "Play is pressed" << std::endl;
-                        query = "hello";
+                        // if rabin-karp is selected
+                        window.close();
+                        query = "world";
+                        text = "hello world";
                         std::vector<sf::Texture> letters;
                         std::vector<sf::Sprite> Lsprites;
-                        rabin(&window, &query, &text, &letters, &Lsprites);
-                       
+                        sf::RenderWindow algo_win(sf::VideoMode(840, 500), "Rabin-Karp Visualization");
+                        rabin(&algo_win, &query, &text, &letters, &Lsprites);
+                        break;
                     }
                     else if (menu.getPressedItem() == 1) {
-                        std::cout << "Play is pressed" << std::endl;
-                        query = "hello";
+                        // if boyer-moore is selected
+                        window.close();
+                        query = "world";
+                        text = "hello world";
                         std::vector<sf::Texture> letters;
                         std::vector<sf::Sprite> Lsprites;
-                        BM(&window, &query, &text, &letters, &Lsprites);
+                        sf::RenderWindow algo_win(sf::VideoMode(840, 500), "Boyer-Moore Visualization");
+                        BM(&algo_win, &query, &text, &letters, &Lsprites);
                         break;
                     }
                     else if (menu.getPressedItem() == 2) {
+                        // exit
                         window.close();
                         break;
                     }
@@ -72,7 +83,6 @@ void main_menu() {
                 break;
             }
         }
-        //window.clear(sf::Color::White);
         window.clear();
 
         menu.draw(window);
@@ -80,9 +90,9 @@ void main_menu() {
     }
 }
 
-void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites, int* framnum) {
-    // reset the screen for the algorithms
-    (*framnum)++;
+void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites) {
+    // Resets the screen to just the text, query, and letters
+
     window->clear(sf::Color::White);
     sf::Font f;
     f.loadFromFile("font.ttf");
@@ -93,60 +103,59 @@ void r_screen(sf::RenderWindow* window, std::string* query, std::string* text, s
 
     (*letters) = {};
     (*letterSprites) = {};
-    
+
     for (int i = 0; i < text->size(); i++) {
+        // generate and draw the letters that each algo will highlight
         sf::Texture newTexture;
         letters->push_back(newTexture);
         (*letters)[i].loadFromFile(std::to_string(std::tolower((*text)[i])) + ".png");
         letterSprites->push_back(sf::Sprite((*letters)[i]));
-        (*letterSprites)[i].setPosition(40 + i * 70, 400);
+        
+        int spacing = 70;
+        int ypos = 300;
+        int startx = 40;
+        (*letterSprites)[i].setPosition(startx + i * spacing, ypos);
 
         window->draw((*letterSprites)[i]);
-        
+
     }
 }
 
 
 void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites) {
-    (*query) = "world";
-    (*text) = "hello world";
-
-    window->setFramerateLimit(1); // wait 1 sec between updating screens
-
-    int framenum = 0;
-
-    r_screen(window, query, text, letters, letterSprites, &framenum);
+    window->setFramerateLimit(1); // wait 1 sec between each window->display()
+    r_screen(window, query, text, letters, letterSprites);
     window->display();
 
+    // rabin-karp implementation
     vector<int> matchIndices;
-    int prime = 101; // any prime number
-    int numLetters = 256; // length of alphabet
-
+    int prime = 101;
+    int numLetters = 256; 
     int h = 1;
     for (int i = 0; i < query->size() - 1; i++) {
         h = (h * numLetters) % prime;
 
     }
-
     int patternHash = 0;
     int textHash = 0;
     for (int i = 0; i < query->size(); i++) {
         patternHash = (numLetters * patternHash + int(query->at(i))) % prime;
         textHash = (numLetters * textHash + int(text->at(i))) % prime;
     }
-
     for (int i = 0; i < (text->size() - query->size() + 1); i++) {
-        r_screen(window, query, text, letters, letterSprites, &framenum);
+        // highlight the current window of text in yellow
+        r_screen(window, query, text, letters, letterSprites);
         for (int n = 0; n < query->size(); n++) {
             (*letterSprites)[n + i].setColor(sf::Color::Yellow);
             window->draw((*letterSprites)[i + n]);
         }
         window->display();
-        if (patternHash == textHash) {
 
-            int j; // initialize outside for loop so the next if statement can use j
+        if (patternHash == textHash) {
+            int j;
             for (j = 0; j < query->size(); j++) {
-                r_screen(window, query, text, letters, letterSprites, &framenum);
+                // highlight each letter in red as it's being double-checked, and the window in yellow
+                r_screen(window, query, text, letters, letterSprites);
                 for (int n = 0; n < query->size(); n++) {
                     (*letterSprites)[n + i].setColor(sf::Color::Yellow);
                     window->draw((*letterSprites)[i + n]);
@@ -156,7 +165,6 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
                 window->display();
 
                 if (text->at(i + j) != query->at(j)) {
-
                     break;
                 }
             }
@@ -172,7 +180,8 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
         }
     }
 
-    r_screen(window, query, text, letters, letterSprites, &framenum);
+    // highlight all matches
+    r_screen(window, query, text, letters, letterSprites);
     for (int i = 0; i < letterSprites->size(); i++) {
 
         for (int n = 0; n < matchIndices.size(); n++) {
@@ -184,12 +193,10 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
     }
     window->display();
 
-    bool s = 1;
     // wait for esc press
+    bool s = true;
     while (s) {
         sf::Event Event;
-        MainMenu menu(window->getSize().x, window->getSize().y);
-        //Event Loop:
         while (window->pollEvent(Event))
         {
             switch (Event.type)
@@ -198,18 +205,19 @@ void rabin(sf::RenderWindow* window, std::string* query, std::string* text, std:
                 switch (Event.key.code)
                 {
                 case sf::Keyboard::Escape:
-                    s = 0;
+                    s = false;
                 }
             }
         }
     }
+    // close the window and reopen main menu
     window->close();
     main_menu();
 }
 
 
 void badChar(vector<int>* bChars, string* query) {
-    int CHARNUM = 256; // length of alphabet
+    int CHARNUM = 256;
     for (int i = 0; i < CHARNUM; i++) {
         bChars->push_back(-1);
     }
@@ -219,26 +227,25 @@ void badChar(vector<int>* bChars, string* query) {
 }
 
 void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::vector<sf::Texture>* letters, std::vector<sf::Sprite>* letterSprites) {
-    window->setFramerateLimit(1); // wait 1 sec between updating screens
-    (*query) = "world";
-    (*text) = "hello, world";
-    int framenum = 0;
-
-    r_screen(window, query, text, letters, letterSprites, &framenum);
+    window->setFramerateLimit(1); // wait 1 sec between each window->display()
+    r_screen(window, query, text, letters, letterSprites);
     window->display();
-    
+
+    // boyer-moore implementation
     vector<int> bChars, matches;
     badChar(&bChars, query);
     int shift = 0;
     while (shift <= text->size() - query->size()) {
         int j = query->size() - 1;
 
-        r_screen(window, query, text, letters, letterSprites, &framenum);
+        r_screen(window, query, text, letters, letterSprites);
         for (int n = 0; n < query->size(); n++) {
             if (n == query->size() - 1) {
+                // highlight the letter compared to last query letter in green
                 (*letterSprites)[n + shift].setColor(sf::Color::Green);
             }
             else {
+                // highlight rest of the current window in yellow
                 (*letterSprites)[n + shift].setColor(sf::Color::Yellow);
             }
             window->draw((*letterSprites)[shift + n]);
@@ -258,7 +265,6 @@ void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::ve
             }
         }
         else {
-            // change shift by n if n>1, otherwise change it by 1
             int n = j - bChars.at(int(text->at(shift + j)));
             if (n > 1) {
                 shift += n;
@@ -269,9 +275,9 @@ void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::ve
         }
     }
 
-    r_screen(window, query, text, letters, letterSprites, &framenum);
+    // highlight all matches in red
+    r_screen(window, query, text, letters, letterSprites);
     for (int i = 0; i < letterSprites->size(); i++) {
-
         for (int n = 0; n < matches.size(); n++) {
             if (i >= matches[n] && i < matches[n] + query->size()) {
                 (*letterSprites)[i].setColor(sf::Color::Red);
@@ -281,12 +287,10 @@ void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::ve
     }
     window->display();
 
-    bool s = 1;
     // wait for esc press
+    bool s = 1;
     while (s) {
         sf::Event Event;
-        MainMenu menu(window->getSize().x, window->getSize().y);
-        //Event Loop:
         while (window->pollEvent(Event))
         {
             switch (Event.type)
@@ -300,7 +304,7 @@ void BM(sf::RenderWindow* window, std::string* query, std::string* text, std::ve
             }
         }
     }
+    // close the window and reopen main menu
     window->close();
     main_menu();
-
 }
